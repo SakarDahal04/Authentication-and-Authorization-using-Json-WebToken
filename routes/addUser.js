@@ -14,7 +14,7 @@ app.use(express.json());
 
 // Getting the main homepage which we want to access
 router.get("/homepage", jwtAuthMiddleware, (req, res) => {
-    console.log(req.cookies.token)
+    // console.log(req.cookies.token)
     const token = req.cookies.token;
     try {
         console.log("Homepage111x");
@@ -35,7 +35,6 @@ router.get("/test", jwtAuthMiddleware, (req, res) => {
         console.log("Welcome to the test page");
         res.render("test", {
             title: "Test Page",
-            token: token
         })
     }
     catch(err) {
