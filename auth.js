@@ -1,3 +1,8 @@
+// This file will only be used when we are using the localAuthMiddleware middleware
+// In this middleware we will be have to pass the value of username and password on each access to the protected routes
+// Otherwise we don't get the access to the protected routes.
+// So this file is no use while using JWT
+
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const UsersInfo = require('./models/users');
