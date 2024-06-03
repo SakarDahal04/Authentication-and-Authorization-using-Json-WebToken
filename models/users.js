@@ -4,7 +4,8 @@ const bcrypt = require('bcrypt');
 const userSchema = new mongoose.Schema( {
     username: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     password: {
         type: String,
@@ -12,8 +13,9 @@ const userSchema = new mongoose.Schema( {
     }
 });
 
+// It will run befor the user document is being saved in the datasbase.
 userSchema.pre("save", async function(next) {
-    const user = this;
+    const user = this;      // this refers to the documnet being saved
     if(!user.isModified('password')) return next();
 
     try {

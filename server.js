@@ -6,7 +6,7 @@ require('./db.js');
 app = express();
 
 const PORT = process.env.PORT || 9000
-const passport = require('./auth')
+// const passport = require('./auth')
 const jwt = require('./jwt')
 
 const logRequest = (req, res, next) => {
@@ -24,8 +24,8 @@ app.set('view engine', "ejs");
 
 const userRoutes = require("./routes/addUser");
 
-app.use(passport.initialize());
-const localAuthMiddleware = passport.authenticate('local', {session: false}); 
+// app.use(passport.initialize());
+// const localAuthMiddleware = passport.authenticate('local', {session: false}); 
 
 app.use("/", userRoutes);
 

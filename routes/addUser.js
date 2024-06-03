@@ -3,14 +3,14 @@ const express = require('express');
 const app = express();
 const router = express.Router();
 const UsersInfo = require('./../models/users')
-const passport = require('./../auth')
+// const passport = require('./../auth')
 
 app.use(express.urlencoded({extended: false}));
 const {jwtAuthMiddleware, generateToken} = require("./../jwt");
 
 app.use(express.json());    
-app.use(passport.initialize());
-const localAuthMiddleware = passport.authenticate('local', {session: false}); 
+// app.use(passport.initialize());
+// const localAuthMiddleware = passport.authenticate('local', {session: false}); 
 
 // Getting the main homepage which we want to access
 router.get("/homepage", jwtAuthMiddleware, (req, res) => {
@@ -20,8 +20,23 @@ router.get("/homepage", jwtAuthMiddleware, (req, res) => {
         console.log("Homepage111x");
         res.render("index", {
             title: "Homepage",
-            token: token
+            // token: token
         });
+    }
+    catch(err) {
+        console.log(err);
+        res.send(err);
+    }
+})
+
+// Accessing the test page
+router.get("/test", jwtAuthMiddleware, (req, res) => {
+    try{
+        console.log("Welcome to the test page");
+        res.render("test", {
+            title: "Test Page",
+            token: token
+        })
     }
     catch(err) {
         console.log(err);
@@ -69,17 +84,19 @@ router.post("/addUserViaSignup", async (req, res) => {
         const response = await newItem.save();
         console.log("Data Saved");
         
-        const payload = {
-            username: response.username
-        }
+        // We can avoid the generating of the token as we are going to generate token in the login stage.
 
-        console.log(JSON.stringify(payload));
+        // const payload = {
+        //     id: response.id,        // Added later
+        //     username: response.username
+        // }
 
-        const token = generateToken(payload);
-        console.log(`Token: ${token}`);
-        res.render("login", {
-            title: "Login",
-        })
+        // // To check
+        // console.log(JSON.stringify(payload));
+
+        // const token = generateToken(payload);
+        // console.log(`Token: ${token}`);
+        res.redirect("/");
     }
     catch(err) {
         console.log(err);
@@ -99,7 +116,9 @@ router.post("/loginToMainPage", async (req, res) => {
             return res.status(401).json({err: "Invalid Username and Password"});
         }
 
+        // To make sure the token that is generated belong to the specific user the id is also included in the payload
         const payload = {
+            id: user.id,
             username : user.username,
         }
         console.log("token1Error")
@@ -107,6 +126,7 @@ router.post("/loginToMainPage", async (req, res) => {
         console.log("token2Error")
         console.log("User Verified");
         console.log(token);
+        // The refresh token need to be stored somewhere. We can store this token either in cookie or in the db
         res.cookie('token', token);
         res.redirect('/homepage');
     }
